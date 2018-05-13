@@ -1,6 +1,3 @@
-# alias
-/app/* /app/*.html
-
 # permanent redirect
 /clock /app/clock 301
 /dclock /app/dclock 301
