@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>contact us</title>
+<style>
+body,
+input,
+select,
+textarea { font: 16px/1.5 sans-serif }
+
+input[type="text"] { height: 22px; }
+
+h1,
+h2 {
+	font-weight: normal;
+	margin: 0;
+}
+
+.note { font: 9px/1.2 sans-serif }
+
+.mailform_error_msg {
+	margin: 0 10px;
+	color: red;
+}
+
+.mailform_invalid {
+	background: #fee;
+}
+
+</style>
+</head>
+<body>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KFLB6M"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KFLB6M');</script>
+<!-- End Google Tag Manager -->
+
+<h1>contact us</h1>
+<form action="" id="contactForm">
+<p><label>お名前 <span class="note">例: 山田太郎</span><br />
+<input type="text" name="お名前" value="" style="width:200px" class="mailform_required"></label></p>
+
+<p><label>フリガナ <span class="note">例: ヤマダタロウ</span><br />
+<input type="text" name="フリガナ" value="" style="width:200px"></label></p>
+
+<p><label>電話番号 <span class="note">例: 03-1234-5678</span><br />
+<input type="text" name="電話番号" value="" style="width:200px"></label></p>
+
+<p><label>メールアドレス <span class="note">例: somebody@example.com</span><br />
+<input type="text" name="メールアドレス" value="" style="width:400px" class="mailform_required"></label></p>
+
+<p>返信先<br />
+<label><input type="radio" name="返信先" value="電話" /> 電話</label><br />
+<label><input type="radio" name="返信先" value="メール" checked="checked" /> メール</label></p>
+
+<p>ご用件<br />
+<label><input type="radio" name="ご用件" value="お仕事のご相談" checked="" /> お仕事のご相談</label><br />
+<label><input type="radio" name="ご用件" value="お見積もりをご希望" /> お見積もりをご希望</label><br />
+<label><input type="radio" name="ご用件" value="その他" /> その他</label>
+<input type="text" name="ご用件_その他" value="" style="width:200px"></p>
+
+<p><label>緊急度 <select name="緊急度">
+<option selected="">特急</option>
+<option>ふつう</option>
+<option>のんびり</option>
+</select></label></p>
+
+<p><label>お問い合わせ内容<br />
+<textarea name="お問い合わせ内容" style="width:400px; height:100px" class="mailform_required"></textarea></label></p>
+
+<p><input type="submit" value="お問い合わせを送信する"></p>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="contact.js"></script>
+</form>
+</body>
+</html>

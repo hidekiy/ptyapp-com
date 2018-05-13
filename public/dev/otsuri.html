@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Otsuri Trainer</title>
+<style>
+body { font-size: 20px;}
+h1, h2, h3, th { font-weight: normal; }
+h1, h2, h3 { margin: 10px 0;}
+#requestAmount { font-size: 50px; }
+td { border: 1px solid #ddd; padding: 10px;}
+input { vertical-align: middle; }
+button { font-size: 16px; }
+#done { font-size: 30px; padding: 2px 50px; }
+label { margin: 0 2px; padding-right: 10px; border: 2px solid transparent; }
+.checked { border: 2px solid black }
+</style>
+</head>
+<body>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KFLB6M"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KFLB6M');</script>
+<!-- End Google Tag Manager -->
+
+<h2 id="requestAmount"></h2>
+<div id="wallet">
+<table>
+<tr><th>1000</th><td id="coinCheck_1000"></td><td id="coinButton_1000"></td></tr>
+<tr><th>100</th><td id="coinCheck_100"></td><td id="coinButton_100"></td></tr>
+<tr><th>10</th><td id="coinCheck_10"></td><td id="coinButton_10"></td></tr>
+<tr><th>1</th><td id="coinCheck_1"></td><td id="coinButton_1"></td></tr>
+<tr><th></th><td colspan="2" style="text-align:right"><button id="done">doya</button></td></tr>
+</table>
+</div>
+<p id="scoreLog"></p>
+<h2 id="payDetail"></h2>
+<h2 id="result"></h2>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
+<script>
+/*global window, jQuery*/
+
+(function () {
+	'use strict';
+	var $ = jQuery,
+		coinTable = [1000, 500, 100, 50, 10, 5, 1],
+		score = [];
+
+	function getCoins(amount) {
+		var combination = [];
+
+		_(coinTable).each(function (coin) {
+			var count = Math.floor(amount / coin);
+
+			amount -= coin * count;
+			combination.push(count);
+		});
+
+		return combination;
+	}
+
+	function getAmount(coins) {
+		return _(coins).reduce(function (memo, count, index) {
+			return memo + coinTable[index] * count;
+		}, 0);
+	}
+
+	function isPayable(from, to) {
+		return _(from).all(function (count, index) {
+			return count <= to[index];
+		})
+	}
+
+	function drawCheckbox(coins) {
+		_([1000, 100, 10, 1]).each(function (unit) {
+			$('#coinCheck_' + unit).empty().append(_.flatten(_(coins).map(function (count, index) {
+				var coin = coinTable[index];
+
+				if (coin >= unit * 10 || coin < unit) {
+					return [];
+				}
+
+				return _(_.range(count)).map(function () {
+					return $('<label />').append(
+						$('<input />', {type: 'checkbox', name: coin}),
+						coin
+					)[0];
+				});
+			})));
+
+			$('#coinButton_' + unit).empty().append(_(getVariation(coins, unit)).map(function (c) {
+				return $('<button />', {text: c.amount, click: function () {
+					var that = this;
+
+					_(c.coins).each(function (count, index) {
+						var coin = coinTable[index];
+						var coinsInput = $(that).parents('tr').find('input').filter(function () {
+							return $(this).attr('name') === String(coin);
+						});
+						_(coinsInput).each(function (input, index) {
+							$(input).attr('checked', index < count ? 'checked' : null);
+							$(input).change();
+						});
+					})
+				}})[0];
+			}));
+		});
+	}
+
+	function readCheckbox(reverse) {
+		return _(coinTable).map(function (coin) {
+			var coinsInput = $('#wallet input[type=checkbox]').filter(function () {
+				return $(this).attr('name') === String(coin);
+			});
+
+			if (!reverse) {
+				return coinsInput.filter(':checked').length;
+			}
+
+			return coinsInput.filter(':not(:checked)').length;
+		});
+	}
+
+	function isNormalizedCoins(coins) {
+		return _(coins).all(function (count, index) {
+			var coin = coinTable[index];
+
+			if (String(coin).charAt(0) === '5') {
+				return count <= 1;
+			}
+
+			return count <= 4;
+		});
+	}
+
+	function isValidOtsuri(payCoins, otsuriCoins) {
+		return _(payCoins).all(function (count, index) {
+			if (count > 0) {
+				return otsuriCoins[index] === 0;
+			}
+
+			return true;
+		});
+	}
+
+	function addCoins(a, b) {
+		return _(a).map(function (count, index) {
+			return count + b[index];
+		});
+	}
+
+	function getVariation(coins, unit) {
+		return _.compact(_(_.range(10)).map(function (i) {
+			var amount = unit * i,
+				tryingCoins = getCoins(amount);
+
+			if (isPayable(tryingCoins, coins)) {
+				return {
+					coins: tryingCoins,
+					amount: amount
+				};
+			}
+
+			return null;
+		}));
+	}
+
+	function refresh() {
+		var requestAmount = _.random(1, 4500),
+			startAt = Date.now(),
+			requestCoins = getCoins(requestAmount),
+			havingAmount,
+			havingCoins;
+
+		$('#requestAmount').text(requestAmount);
+		$('#payDetail').text('');
+		$('#result').text('');
+		$('#done').attr('disabled', null);
+
+		while (true) {
+			havingAmount = _.random(requestAmount, 4999);
+			havingCoins = getCoins(havingAmount);
+
+			if (!isPayable(requestCoins, havingCoins)) {
+				break;
+			}
+		}
+
+		//$('#wallet').on('change', 'input[type=checkbox]',
+
+		$('#done').click(function () {
+			var payCoins = readCheckbox(),
+				payAmount = getAmount(payCoins),
+				remainCoins = readCheckbox(true),
+				returnAmount = payAmount - requestAmount,
+				returnCoins,
+				resultCoins;
+
+			//console.log(returnAmount);
+
+			if (returnAmount >= 0) {
+				returnCoins = getCoins(returnAmount),
+				resultCoins = addCoins(returnCoins, remainCoins);
+
+				$('#payDetail').text(['pay: ', payAmount, ', return: ', returnAmount].join(''));
+
+				if (!isValidOtsuri(payCoins, returnCoins)) {
+					$('#result').text('improper: coins-go-around');
+				} else if (!isNormalizedCoins(resultCoins)) {
+					$('#result').text('improper: too many coins');
+				} else {
+					$('#result').text('OK');
+					$('#done').attr('disabled', 'disabled');
+
+					score.unshift((Date.now() - startAt) / 1000);
+					$('#scoreLog').text(score.join(', '));
+
+					setTimeout(refresh, 3000);
+				}
+			} else {
+				$('#payDetail').text('');
+				$('#result').text('not enough');
+			}
+
+		});
+
+		drawCheckbox(havingCoins);
+	}
+
+	$('#wallet').on('change', 'input[type=checkbox]', function () {
+		if ($(this).is(':checked')) {
+			$(this).parent().addClass('checked');
+		} else {
+			$(this).parent().removeClass('checked');
+		}
+
+		var amount = _($(this).parents('tr').find('input[type=checkbox]').filter(':checked')).reduce(function (memo, elem) {
+			return +$(elem).attr('name') + memo;
+		}, 0);
+
+		$(this).parents('tr').find('button').removeClass('checked');
+		$(this).parents('tr').find('button').filter(function () {
+			return $(this).text() === String(amount);
+		}).addClass('checked');
+	});
+
+/*
+	console.log(getCoins(376));
+	console.log(getAmount(getCoins(376)));
+	console.log(isPayable([0, 3, 1, 2, 1, 1], [1, 4, 1, 2, 1, 1]))
+	console.log(isPayable([1, 4, 1, 2, 1, 1], [0, 3, 1, 2, 1, 1]))
+	console.log(addCoins([1, 4, 1, 2, 1, 1], [0, 3, 1, 2, 1, 1]))
+*/
+
+	refresh();
+}());
+</script>
+</body>
+</html>

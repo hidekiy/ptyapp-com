@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="author" href="http://hidekiy.com/">
+<title>HTML5 Simplest Memo</title>
+<style>
+body, p { margin: 0 }
+textarea {
+	font: 16px/1.4 sans-serif;
+	width: 99%;
+	height: 500px;
+	margin: 5px;
+}
+h1 {
+	font: 22px/1.4 normal sans-serif;
+	color: #666;
+	margin: 5px 0 0 5px;
+}
+#autosave {
+	font-size: 12px;
+	text-align: right;
+}
+#command {
+	margin: 0 2px;
+}
+#command-copy, #command-clear {
+	color: white;
+	background: #666;
+	padding: 0 2px;
+	border-radius: 2px;
+	margin: 0 2px;
+	cursor: pointer;
+}
+embed { vertical-align: top }
+</style>
+</head>
+<body style="display:none">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KFLB6M"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KFLB6M');</script>
+<!-- End Google Tag Manager -->
+
+<h1>HTML5 Simplest Memo</h1>
+<textarea></textarea>
+<div id="command">
+<span id="command-copy">copy</span>
+<span id="command-clear">clear</span>
+<span id="status"></span>
+</div>
+<p id="autosave"><span id="autosave-status"></span></p>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/1.3.5/ZeroClipboard.js"></script>
+<script src="simplest-memo.js"></script>
+</body>
+</html>

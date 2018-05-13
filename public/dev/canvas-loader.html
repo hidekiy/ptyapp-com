@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="http://www.ptyapp.com/">
+<title>canvas-loader</title>
+<style>
+body { font: 24px/1.4 sans-serif }
+body, a { color: #4c4c4c }
+li { margin: 20px 0 }
+</style>
+</head>
+<body>
+<h1>canvas-loader</h1>
+<canvas id="canvasLoaderS" width="16" height="16"></canvas>
+<canvas id="canvasLoaderM" width="24" height="24"></canvas>
+<canvas id="canvasLoaderL" width="32" height="32"></canvas>
+<canvas id="canvasLoaderLL" width="60" height="60"></canvas>
+<canvas id="canvasLoaderLLL" width="100" height="100"></canvas>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+enableLoadingAnimation('#canvasLoaderS');
+enableLoadingAnimation('#canvasLoaderM');
+enableLoadingAnimation('#canvasLoaderL');
+enableLoadingAnimation('#canvasLoaderLL');
+enableLoadingAnimation('#canvasLoaderLLL');
+
+function enableLoadingAnimation(canvas) {
+    var ctx = $(canvas)[0].getContext('2d'),
+        PI_4 = Math.PI / 4,
+        PI_80 = Math.PI / 80,
+        canvasSize = $(canvas).width(),
+        radiusA = canvasSize * 0.20,
+        radiusB = canvasSize * 0.40,
+        lineWidth = 0.2 + canvasSize * 0.14,
+        counterA = 0,
+        counterB = 0;
+
+    ctx.lineCap = 'round';
+    ctx.lineWidth = lineWidth;
+
+    window.setInterval(function () {
+        ctx.clearRect(0, 0, canvasSize, canvasSize);
+        ctx.save();
+
+        ctx.translate(canvasSize / 2, canvasSize / 2);
+        ctx.rotate(PI_4 * counterA - PI_80 * counterB);
+
+        for (var i = 0; i < 8; i++) {
+            ctx.strokeStyle = 'rgba(' + [0, 0, 0, 0.8 - (0.1 * i)].join(',') + ')';
+            ctx.fillStyle = 'rgba(' + [0, 0, 0, 0.8 - (0.1 * i)].join(',') + ')';
+
+            ctx.beginPath();
+            ctx.moveTo(radiusA, 0);
+            ctx.lineTo(radiusB, 0);
+            ctx.stroke();
+
+            ctx.rotate(PI_4);
+        }
+
+        ctx.restore();
+
+        counterA = (counterA + 1) % 8;
+        counterB = (counterB + 1) % 160;
+    }, 80);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>東海道新幹線</title>
+<style>
+body { margin: 0 }
+#map { width: 100%; height: 300px }
+#station p {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 5px;
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="station"></div>
+<div id="result"></div>
+<script src="http://maps.google.com/maps/api/js?sensor=false&amp;libraries=geometry"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+/*global window, google, jQuery*/
+
+
+(function ($) {
+    'use strict';
+
+    var computeDistanceBetween = google.maps.geometry.spherical.computeDistanceBetween,
+        positionWatcher,
+        map = new google.maps.Map($('#map')[0]),
+        currentMarker = new google.maps.Marker({
+            position: new google.maps.LatLng(0, 0),
+            map: map,
+            title: '現在位置',
+            icon: 'http://maps.google.co.jp/mapfiles/ms/icons/blue-dot.png',
+            shadow: new google.maps.MarkerImage(
+                'http://maps.google.co.jp/mapfiles/ms/icons/msmarker.shadow.png',
+                null,
+                null,
+                new google.maps.Point(16, 32)
+            )
+        });
+
+    Array.prototype.clone = function () {
+        return Array.apply(null, this);
+    };
+
+    var station = [
+        {
+            "lat": 35.681391,
+            "lon": 139.766103,
+            "name": "東京"
+        },
+        {
+            "lat": 35.62876,
+            "lon": 139.738999,
+            "name": "品川"
+        },
+        {
+            "lat": 35.506824,
+            "lon": 139.617348,
+            "name": "新横浜"
+        },
+        {
+            "lat": 35.256225,
+            "lon": 139.155772,
+            "name": "小田原"
+        },
+        {
+            "lat": 35.103573,
+            "lon": 139.077679,
+            "name": "熱海"
+        },
+        {
+            "lat": 35.126253,
+            "lon": 138.911133,
+            "name": "三島"
+        },
+        {
+            "lat": 35.142017,
+            "lon": 138.663378,
+            "name": "新富士"
+        },
+        {
+            "lat": 34.971629,
+            "lon": 138.388579,
+            "name": "静岡"
+        },
+        {
+            "lat": 34.769463,
+            "lon": 138.014937,
+            "name": "掛川"
+        },
+        {
+            "lat": 34.703866,
+            "lon": 137.734759,
+            "name": "浜松"
+        },
+        {
+            "lat": 34.762734,
+            "lon": 137.382128,
+            "name": "豊橋"
+        },
+        {
+            "lat": 34.96968,
+            "lon": 137.060918,
+            "name": "三河安城"
+        },
+        {
+            "lat": 35.170694,
+            "lon": 136.881637,
+            "name": "名古屋"
+        },
+        {
+            "lat": 35.315833,
+            "lon": 136.685556,
+            "name": "岐阜羽島"
+        },
+        {
+            "lat": 35.314657,
+            "lon": 136.289992,
+            "name": "米原"
+        },
+        {
+            "lat": 34.985465,
+            "lon": 135.757748,
+            "name": "京都"
+        },
+        {
+            "lat": 34.734136,
+            "lon": 135.501852,
+            "name": "新大阪"
+        }
+    ];
+
+    map.setOptions({
+        center: new google.maps.LatLng(35.25595, 137.92114),
+        disableDefaultUI: true,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoom: 8,
+        scrollwheel: false
+    });
+
+    google.maps.event.addListener(map, 'click', function (event) {
+//        this.setCenter(event.latLng);
+        console.log(event);
+    });
+
+    $.each(station, function () {
+        this.latlng = new google.maps.LatLng(this.lat, this.lon);
+
+        var marker = new google.maps.Marker({
+            position: this.latlng,
+            map: map,
+            title: this.name,
+            icon: 'http://labs.google.com/ridefinder/images/mm_20_green.png',
+            shadow: new google.maps.MarkerImage(
+                'http://labs.google.com/ridefinder/images/mm_20_shadow.png',
+                null,
+                null,
+                new google.maps.Point(6, 20)
+            )
+        });
+    });
+
+    function positionUpdate(pos) {
+        var position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        currentMarker.setPosition(position);
+
+        $.each(station, function () {
+            this.distance = computeDistanceBetween(this.latlng, position);
+        });
+
+        var nearestStation = station.clone().sort(function (a, b) {
+            return a.distance - b.distance;
+        });
+
+        var sortedStation = station.clone();
+        if (true) {
+            sortedStation.reverse();
+        }
+
+        var index = $.inArray(nearestStation[0], sortedStation);
+
+        $('#station').empty();
+        $.each(sortedStation.slice(index, index + 3), function () {
+            $('<p />', {
+                text: [
+                    this.name,
+                    ' ',
+                    (this.distance / 1000).toFixed(0),
+                    ' km'
+                ].join('')
+            }).appendTo('#station');
+        });
+
+        $('<p />', {
+            text: [
+                'position updated',
+                position
+            ].join(': ')
+        }).appendTo('#result');
+    }
+
+    function positionError(err) {
+        var msg;
+
+        if (err.code === err.UNKNOWN_ERROR) {
+            msg = '未知のエラー';
+        } else if (err.code === err.PERMISSION_DENIED) {
+            msg = '位置情報取得が許可されませんでした';
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+            msg = '位置情報取得がサポートされていません';
+        } else if (err.code === err.TIMEOUT) {
+            msg = '位置情報取得が取得できません(タイムアウト)';
+        }
+
+        $('<p />', {
+            text: [
+                '申し訳ございません。位置情報取得に失敗しました',
+                msg,
+                err.message
+            ].join(': ')
+        }).appendTo('#result');
+    }
+
+    if (window.navigator.geolocation) {
+        positionWatcher = window.navigator.geolocation.watchPosition(positionUpdate, positionError);
+    } else {
+        positionError({
+            code: -2,
+            message: '申し訳ございません。ご利用のブラウザでは位置情報取得APIがサポートされていません。'
+        });
+    }
+}(jQuery));
+</script>
+</body>
+</html>

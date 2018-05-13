@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>aspcart</title>
+<style>
+body, input, select, textarea { font: 16px/1.4 sans-serif }
+input[type="text"] { height: 24px; }
+body { margin: 0 }
+div, form, pre { margin: 10px }
+p { margin: 0 }
+h1, h2, h3 {
+    font-weight: normal;
+    margin: 0;
+}
+a img { border: 0 }
+table {
+    line-height: 2.2;
+    border-spacing: 3px;
+}
+td { padding: 0 8px }
+#order_form {
+    width: 75%;
+    border-radius: 10px;
+    border: #ccc solid 2px;
+}
+#order_form h2 {
+    color: #666;
+    padding: 5px 0 3px 0;
+    border: solid #ccc;
+    border-width: 0 0 2px 0;
+
+    text-align: center;
+}
+#order_form p { margin: 10px 0 }
+span.note { font: 9px/1.2 sans-serif }
+</style>
+</head>
+<body>
+<h1>aspcart</h1>
+
+<h2>商品カタログ</h2>
+<form action="/" class="aspcart-add">
+<p>複数原産地米 お買い得お米 5kg &yen;1,800 (税込)</p>
+<input type="hidden" name="product" value="お買い得お米5kg">
+<input type="hidden" name="price" value="1800">
+<label><input type="checkbox" name="米ぬか付" />米ぬか付</label>
+<label>数量 <input type="text" name="quantity" size="2" value="1"/></label>
+<input type="submit" value="カートに入れる">
+</form>
+
+<form action="/" class="aspcart-add">
+<p>新潟県魚沼産コシヒカリ 15kg &yen;5,000 (税込)</p>
+<input type="hidden" name="product" value="新潟県魚沼産コシヒカリ15kg">
+<input type="hidden" name="price" value="5000">
+<label>数量 <input type="text" name="quantity" size="2" value="1"/></label>
+<input type="submit" value="カートに入れる">
+</form>
+
+<form action="/" class="aspcart-add">
+<p>石川県産コシヒカリ 30kg &yen;12,500 (税込)</p>
+<input type="hidden" name="product" value="石川県産コシヒカリ30kg">
+<input type="hidden" name="price" value="12500">
+<label>精米度 <select name="精米度">
+<option>白米</option>
+<option>八分づき</option>
+<option>五分づき</option>
+<option>玄米</option>
+</select></label>
+<label>数量 <input type="text" name="quantity" size="2" value="1"/></label>
+<input type="submit" value="カートに入れる">
+</form>
+
+<div>
+<input type="button" id="clear_cart" value="カートを空にする">
+</div>
+
+<h2>カートの内容</h2>
+<div id="cart-dump"></div>
+
+<div>
+<input type="button" id="order_cart" value="注文手続きに進む">
+</div>
+
+<form action="/" id="order_form" style="display:none">
+<h2>ご注文フォーム</h2>
+
+<ul>
+<li>
+<p>注文者について</p>
+<p><label>お名前 <span class="note">例: 山田太郎</span><br>
+<input type="text" name="お名前" value="" style="width:200px"></label></p>
+
+<p><label>フリガナ <span class="note">例: ヤマダタロウ</span><br>
+<input type="text" name="フリガナ" value="" style="width:200px"></label></p>
+
+<p><label>郵便番号 <span class="note">例: 123-4567</span><br>
+<input type="text" name="郵便番号" value="" style="width:120px"></label></p>
+
+<p><label>住所1 (市区町村・番地) <span class="note">例: 東京都渋谷区三丁目123-4</span><br>
+<input type="text" name="住所1" value="" style="width:80%"></label></p>
+
+<p><label>住所2 (建物名・部屋番号) <span class="note">例: 何とかビル123号室</span><br>
+<input type="text" name="住所2" value="" style="width:80%"></label></p>
+
+<p><label>電話番号 <span class="note">例: 03-1234-5678</span><br>
+<input type="text" name="電話番号" value="" style="width:200px"></label></p>
+
+<p><label>メールアドレス <span class="note">例: somebody@example.com</span><br>
+<input type="text" name="メールアドレス" value="" style="width:80%"></label></p>
+</li>
+
+<li>
+<p>発送先について</p>
+<p><label><input type="radio" name="発送先" value="注文者と同じ" checked="" /> 注文者の住所</label></p>
+<p><label><input type="radio" name="発送先" value="注文者と異なる" /> 注文者と異なる住所</label></p>
+<p><span class="note">ギフトの場合は、[注文者と異なる住所] を選択します。</span></p>
+</li>
+
+<li>
+<p>決済方法について</p>
+<p><label><input type="radio" name="決済方法" value="三菱東京UFJ" checked="" /> 三菱東京UFJ銀行 (前払い)</label></p>
+<p><label><input type="radio" name="決済方法" value="ゆうちょ銀行" /> ゆうちょ銀行 (前払い)</label></p>
+<p><span class="note">その他はお問い合わせください。</span></p>
+</li>
+
+<li>
+<p>発送方法について</p>
+<p><label><input type="radio" name="発送方法" value="宅急便" checked="" /> 宅急便</label></p>
+<p><label><input type="radio" name="発送方法" value="クロネコメール便" /> クロネコメール便</label></p>
+<p><span class="note">その他はお問い合わせください。</span></p>
+</li>
+
+<li>
+<p>その他特記事項</p>
+<p><textarea name="特記事項" style="width:50%; height:50px"></textarea></p>
+</li>
+</ul>
+
+<p style="text-align:right; margin:10px"><input type="submit" value="利用規約に同意して注文を送信する"></p>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://hidekiy.com/js/json2.js"></script>
+<script src="jquery.cookies.2.2.0.js"></script>
+<script src="global.js"></script>
+<script src="aspcart.js"></script>
+</body>
+</html>

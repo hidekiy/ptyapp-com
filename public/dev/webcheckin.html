@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>web check in</title>
+<style>
+body, input, table.google-visualization-table-table { font: 24px/1.4 Verdana, sans-serif }
+body, a { color: #4c4c4c }
+body { margin: 0 }
+h1, h2 { font-weight: normal }
+h1 { font-size: 80px; color: #666; margin: 0 }
+#loading { display: none }
+#loading img, #loading span { vertical-align: middle }
+</style>
+</head>
+<body>
+<h1>web check in</h1>
+<form id="query" action="/">
+<p><label>Column A: <input type="text" value="090-5034-1832" style="width: 200px"></label> <input type="submit" value="query" /></p>
+</form>
+<div style="margin: 30px">
+<p id="message"></p>
+<p id="resultTable"></p>
+<p id="loading"><img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> <span>Loading...</span></p>
+</div>
+<p style="text-align: right">Powered By <a href="http://code.google.com/intl/en/apis/chart/interactive/docs/reference.html">Google Visualization API</a>.</p>
+<script src="http://www.google.com/jsapi"></script>
+<script>
+/*global google*/
+(function () {
+    'use strict';
+
+    google.load('visualization', '1', {packages: ['table']});
+    google.load('jquery', '1');
+    google.setOnLoadCallback(function () {
+        function QueryByKey(key) {
+            var query = new google.visualization.Query('http://spreadsheets.google.com/tq?' + $.param({
+    //            key: 'pMIBrnJ4PHK-SHF_4IqAcVQ',
+                key: '0Anir4lZzZS0gdEdwdkVyWTlEekdYUUxNZWNNZGNqUXc',
+                gid: 0, //ワークシート0番
+                pub: 0
+            }));
+
+            query.setQuery(['select * where A = "', key, '"'].join(''));
+            $('#resultTable').empty();
+            $('#loading').show();
+
+            query.send(function (res) {
+                $('#loading').hide();
+
+                if (res.isError()) {
+                    $('#resultTable').append(
+                        $('<p />', {text: ['query error', res.getMessage()].join(', ')}).append(
+                            '<br />',
+                            res.getDetailedMessage()
+                        )
+                    );
+                    return;
+                }
+
+                var data = res.getDataTable();
+
+                if (data.getNumberOfRows() > 1) {
+                    $('#message').text(data.getNumberOfRows() + '件見つかりました');
+                } else if (data.getNumberOfRows() === 1) {
+                    $('#message').text('');
+                } else {
+                    $('#message').text('該当レコードなし');
+                }
+
+                if (data.getNumberOfRows()) {
+
+                    var appendTable = function (row) {
+                        var singleData = new google.visualization.DataTable();
+                        singleData.addColumn('string', 'key');
+                        singleData.addColumn('string', 'val');
+
+                        for (var col = 0; col < data.getNumberOfColumns(); col++) {
+                            if (!data.getColumnLabel(col).match(/^_/)) {
+                                singleData.addRow([data.getColumnLabel(col), data.getFormattedValue(row, col)]);
+                            }
+                        }
+
+                        var container = $('<p />').appendTo('#resultTable')[0];
+                        var table = new google.visualization.Table(container);
+                        table.draw(singleData);
+                    };
+
+                    for (var row = 0; row < data.getNumberOfRows(); row++) {
+                        appendTable(row);
+                    }
+                }
+            });
+        }
+
+        $('#query').submit(function () {
+            var key = $('input:first', this).val();
+            QueryByKey(key);
+
+            return false;
+        });
+    });
+}());
+</script>
+</body>
+</html>

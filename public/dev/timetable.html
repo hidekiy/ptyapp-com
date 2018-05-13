@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta charset="utf-8">
+<title>timetable viewer</title>
+<style>
+body { font: 12px/1.4 sans-serif }
+h1 { font-size: 100% }
+body, a { color: #4c4c4c }
+#input { width: 90%; height: 200px }
+#output { position: relative; width: 90%; height: 1000px }
+</style>
+</head>
+<body>
+<h1>timetable viewer</h1>
+<div id="output">
+</div>
+
+<textarea id="input">
+2011-5-27 20:00|+250|大講義室|懇親会
+2011-5-27 17:00|+60|大講義室|JavaScript
+2011-5-27 17:00|+60|中講義室|Perl
+2011-5-27 18:40|+60|中講義室|Ruby
+2011-5-27 18:30|+60|大講義室|jQuery
+</textarea>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://www.datejs.com/build/date.js"></script>
+<script>
+(function ($) {
+	var COLUMN_WIDTH = 200;
+	var COLUMN_MARGIN = 50;
+
+
+	var inputText = $('#input').val();
+	var inputData = [];
+
+	$.each(inputText.split(/\n/), function (ix, line) {
+		var items = line.split(/\|/);
+		var dt = Date.parse(items.shift()),
+			dur = items.shift(),
+			room = items.shift(),
+			desc = items.shift();
+
+		if (dt) {
+			console.log([dt, dur, room, desc]);
+
+			inputData.push({
+				datetime: dt,
+				duration: dur,
+				room: room,
+				description: desc
+			});
+		}
+	});
+
+	inputData.sort(function (a, b) {
+		return a.datetime - b.datetime;
+	});
+
+	console.log(inputData);
+
+	var startDt = inputData[0].datetime;
+	var colors = ['#acc', '#cac', '#cca'];
+	var roomIndex = {};
+
+	(function () {
+		var c = 0;
+
+		$.each(inputData, function (ix, item) {
+			if (roomIndex[item.room] === undefined) {
+				roomIndex[item.room] = (COLUMN_WIDTH + COLUMN_MARGIN) * c;
+				c++;
+			}
+		});
+	})();
+
+	$.each(inputData, function (ix, item) {
+		$('<div />', {
+			text: [
+				item.datetime.toString('HH:mm'),
+				item.duration,
+				item.room,
+				item.description
+			].join('/'),
+			css: {
+				position: 'absolute',
+				top: ((item.datetime - startDt) / 60000) + 'px',
+				left: roomIndex[item.room] + 'px',
+				width: COLUMN_WIDTH + 'px',
+				height: item.duration + 'px',
+				background: colors[ix % 3]
+			}
+		}).appendTo('#output');
+	});
+
+	$('<hr />', {
+		css: {
+			position: 'absolute',
+			top: ((new Date() - startDt) / 60000) + 'px',
+			left: 0,
+			width: '100%',
+			height: 0,
+			margin: 0,
+			border: 'solid 1px blue',
+			borderWidth: '1px 0 0 0'
+		}
+	}).appendTo('#output');
+
+})(jQuery);
+
+</script>
+</body>
+</html>

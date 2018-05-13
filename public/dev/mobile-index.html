@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ptyapp.com</title>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/latest/jquery.mobile.min.css">
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script>
+$(window.document).bind('mobileinit', function () {
+    $.mobile.ajaxEnabled = false;
+});
+</script>
+<script src="http://code.jquery.com/mobile/latest/jquery.mobile.min.js"></script>
+</head>
+<body>
+<div data-role="page" data-theme="d">
+<div data-role="header">
+<h1>ptyapp.com</h1>
+</div>
+<p>ptyapp.com: web applications for your interactive parties.</p>
+<div data-role="content">
+<ul data-role="listview" data-dividertheme="d">
+<li data-role="list-divider">Clocks</li>
+<li><a href="clock">HTML5 Clock</a></li>
+<li><a href="digital-clock">HTML5 Digital Clock</a></li>
+</ul>
+</div>
+</div>
+</body>
+</html>

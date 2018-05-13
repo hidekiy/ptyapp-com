@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>web stock manager</title>
+<style>
+body { font: 24px/1.4 Verdana, sans-serif }
+body, a { color: #4c4c4c }
+h1, h2 { font-weight: normal }
+</style>
+</head>
+<body>
+<h1>web stock manager</h1>
+<p><input id="login" type="submit" value="login"></p>
+<img src="/favicon.ico">
+<script src="http://www.google.com/jsapi"></script>
+<script>
+/*global google*/
+(function () {
+    'use strict';
+
+//    google.load('visualization', '1', {packages: ['table']});
+    google.load('gdata', '2');
+    google.load('jquery', '1');
+    google.setOnLoadCallback(function () {
+        console.log('load');
+
+        var scope = 'https://spreadsheets.google.com/feeds/';
+        if (google.accounts.user.checkLogin(scope)) {
+            console.log('login ok');
+
+            google.gdata.client.getRequest()
+                .setUri('https://spreadsheets.google.com/feeds/worksheets/tGaBXFMpLF8kmyuG90PHqWw/private/full/od6')
+                .addParameter('alt', 'json')
+                .execute(function (res) {
+                    console.log(res);
+                });
+
+        }
+        google.accounts.user.getInfo(function (data) {
+            console.log(data);
+        })
+
+        $('#login').click(function () {
+            var token = google.accounts.user.login(scope);
+        });
+    });
+}());
+</script>
+</body>
+</html>

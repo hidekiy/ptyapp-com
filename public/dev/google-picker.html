@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Google Picker Example</title>
+<script src="http://www.google.com/jsapi"></script>
+<script>
+
+google.setOnLoadCallback(createPicker);
+google.load('picker', '1', {language: 'ja'});
+
+function createPicker() {
+    var picker = new google.picker.PickerBuilder()
+        .addView(google.picker.ViewId.SPREADSHEETS)
+        .setCallback(pickerCallback)
+        .build();
+    picker.setVisible(true);
+}
+
+function pickerCallback(data) {
+    console.log(data);
+    console.log(google.picker.ResourceId.generate(data.docs[0]));
+}
+</script>
+</head>
+<body>
+<div id="result"></div>
+</body>
+</html>

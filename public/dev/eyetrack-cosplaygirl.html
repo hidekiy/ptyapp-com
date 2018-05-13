@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>eyetrack-cosplaygirl</title>
+<style>
+body { margin: 0 }
+#fin { height: 3000px }
+#loading {
+    height: 1000px;
+    padding: 200px 0 0 0;
+    text-align: center;
+    font-size: 50px;
+}
+</style>
+</head>
+<body>
+<div id="loading">
+<p><span id="loading-msg">Loading...</span></p>
+</div>
+<div id="main"></div>
+<div id="fin"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://www.google.com/jsapi?key=ABQIAAAAyvp4iWYkrH-2-aauFQd7JBRBWMJlyfH0fB71Qt5O01Zeks1M6xSMOKg4w2hCVgipWb6c6TWXlfk8iw"></script>
+<script src="eyetrack.js"></script>
+<script>
+/*global window, google, jQuery, eyeTrack*/
+
+google.load('feeds', '1');
+
+(function (window, $) {
+    google.setOnLoadCallback(function () {
+        var feed = new google.feeds.Feed('http://cosplaygirl.tumblr.com/rss');
+        feed.setNumEntries(20);
+        feed.load(function (data) {
+            $.each(data.feed.entries, function (i) {
+                var entry = this;
+                var $div = $('<div />', {
+                    css: {
+                        margin: '400px 100px',
+                    },
+                    html: entry.content
+                });
+                $div.children().not('img').remove();
+                $div.find('img').attr({
+                    id: 'im-' + i,
+                    'class': 'eyetrack'
+                });
+                $div.appendTo('#main');
+            });
+
+            eyeTrack.init();
+            window.setTimeout(function () {
+                $('#loading-msg').fadeOut();
+            }, 3000);
+        });
+    });
+}(window, jQuery));
+</script>
+</body>
+</html>

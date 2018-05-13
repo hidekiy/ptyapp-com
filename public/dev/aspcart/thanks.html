@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>aspcart-thanks</title>
+<style>
+body { font: 16px/1.4 sans-serif }
+h1, h2, h3 { font-weight: normal }
+</style>
+</head>
+<body>
+<h1>ご利用ありがとうございました。</h1>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://hidekiy.com/js/json2.js"></script>
+<script src="jquery.cookies.2.2.0.js"></script>
+<script src="global.js"></script>
+<script>
+(function ($) {
+    'use strict';
+
+    var cart,
+        cart_id,
+        match = window.location.search.match(/(\d+)$/);
+
+    if (match) {
+        cart_id = +match[1];
+        cart = new ShoppingCart();
+
+        if (cart.id === cart_id) {
+            cart.clear();
+            console.log('id matched, cleared');
+        }
+    }
+}());
+</script>
+</body>
+</html>
