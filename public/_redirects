@@ -1,3 +1,4 @@
+http://ptyapp.com/* https://ptyapp.com/:splat 301!
 /clock /app/clock
 /dclock /app/dclock
 /digital-clock /app/digital-clock
