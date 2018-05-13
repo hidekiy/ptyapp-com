@@ -1,0 +1,59 @@
+body {
+	font: 12px/1.4 Verdana, sans-serif;
+	margin: 0;
+	padding: 20px;
+}
+
+body,
+a {
+	color: #4C4C4C;
+}
+
+a {
+	border-radius: 4px;
+}
+
+a:hover {
+	background: #FFEDFC
+}
+
+a:active {
+	box-shadow: 0 0 0 1px #FF91EA
+}
+
+p {
+	margin: 0
+}
+
+h1,
+h2 {
+	font-weight: normal;
+}
+
+h1 {
+	margin: 0 0 40px -5px;
+	font-size: 70px;
+}
+
+h1 a {
+	color: #666;
+	text-decoration: none;
+}
+
+h1 a:hover,
+h1 a:active {
+	background: transparent;
+}
+
+h2 {
+	margin: 25px 0 6px 0;
+	font-size: 24px;
+}
+
+.appList {
+	margin: 50px 0;
+}
+
+.authorInfo {
+	margin: 100px 0 0 0;
+}
