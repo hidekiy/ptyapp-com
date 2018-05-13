@@ -1,5 +1,4 @@
-# permanent redirect
-/clock /app/clock 301
-/dclock /app/dclock 301
-/digital-clock /app/digital-clock 301
-/fastfood /app/fastfood 301
+/clock /app/clock
+/dclock /app/dclock
+/digital-clock /app/digital-clock
+/fastfood /app/fastfood
