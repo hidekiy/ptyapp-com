@@ -1,0 +1,38 @@
+{{#> layouts/base title="HTML5 Digital Clock" }}
+{{#*inline "head-block"}}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    body {
+        margin: 0;
+        font: 12px/1 Verdana, sans-serif;
+        color: #4c4c4c;
+    }
+
+    #clock {
+        margin: 0 auto;
+    }
+
+    #clock-main {
+        text-shadow: .01em .01em .03em #bbb;
+    }
+
+    #clock-ampm {
+        font-size: 25%;
+    }
+
+    #clock-date {
+        margin-left: .4em;
+        letter-spacing: .3em;
+        line-height: 1.25;
+        color: #ddd;
+    }
+    </style>
+{{/inline}}
+{{#*inline "hero-block"}}
+    <p id="clock"><span id="clock-date"></span><br><span id="clock-main"><span id="clock-time"></span><span id="clock-ampm"></span></span></p>
+    <p id="error"></p>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.0.31/webfont.js"></script>
+    <script src="dclock.js"></script>
+{{/inline}}
+{{/layouts/base}}

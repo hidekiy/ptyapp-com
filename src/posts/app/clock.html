@@ -1,0 +1,15 @@
+{{#> layouts/base title="HTML5 Clock" }}
+{{#*inline "head-block"}}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    body {
+        margin: 0
+    }
+    </style>
+{{/inline}}
+{{#*inline "hero-block"}}
+    <canvas id="clock"></canvas>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="clock.js"></script>
+{{/inline}}
+{{/layouts/base}}

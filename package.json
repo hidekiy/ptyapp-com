@@ -1,0 +1,26 @@
+{
+  "name": "netlify-ptyapp.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hidekiy/netlify-ptyapp.com.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/hidekiy/netlify-ptyapp.com/issues"
+  },
+  "homepage": "https://github.com/hidekiy/netlify-ptyapp.com#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-hb": "^7.0.1"
+  }
+}
