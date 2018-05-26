@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>{{title}}</title>
+    {{> includes/newrelic-browser }}
+    {{> includes/tagmanager }}
     {{#> head-block}}
         {{!-- Custom <head> content per page could be added. --}}
     {{/head-block}}
-    {{> includes/tagmanager }}
 </head>
 <body>
     {{> includes/tagmanager-noscript }}
