@@ -5,29 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Otsuri Trainer</title>
 <style>
-body { font-size: 20px;}
-h1, h2, h3, th { font-weight: normal; }
-h1, h2, h3 { margin: 10px 0;}
-#requestAmount { font-size: 50px; }
-td { border: 1px solid #ddd; padding: 10px;}
-input { vertical-align: middle; }
-button { font-size: 16px; }
-#done { font-size: 30px; padding: 2px 50px; }
-label { margin: 0 2px; padding-right: 10px; border: 2px solid transparent; }
-.checked { border: 2px solid black }
+body, button {
+	font-size: 20px;
+}
+h1, h2, h3, th {
+	font-weight: normal;
+}
+h1, h2, h3 {
+	margin: 10px 0;
+}
+td {
+	border: 1px solid #ddd;
+	padding: 10px;
+}
+input {
+	vertical-align: middle;
+}
+#requestAmount {
+	font-size: 50px;
+}
+#done {
+	width: 100%;
+	font-size: 30px;
+}
+.coinCheck {
+	margin: 0 2px;
+	padding: 0 10px;
+	border: 2px solid transparent;
+}
+.selected {
+	border: 2px solid black 
+}
+.coinButton {
+	margin: 0 2px;
+	padding: 2px 10px;
+}
 </style>
 </head>
 <body>
-<!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KFLB6M"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-KFLB6M');</script>
-<!-- End Google Tag Manager -->
-
 <h2 id="requestAmount"></h2>
 <div id="wallet">
 <table>
@@ -35,17 +50,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <tr><th>100</th><td id="coinCheck_100"></td><td id="coinButton_100"></td></tr>
 <tr><th>10</th><td id="coinCheck_10"></td><td id="coinButton_10"></td></tr>
 <tr><th>1</th><td id="coinCheck_1"></td><td id="coinButton_1"></td></tr>
-<tr><th></th><td colspan="2" style="text-align:right"><button id="done">doya</button></td></tr>
+<tr><th></th><td colspan="2" style="text-align:right"><button id="done">DOYA</button></td></tr>
 </table>
 </div>
 <p id="scoreLog"></p>
 <h2 id="payDetail"></h2>
 <h2 id="result"></h2>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 <script>
 /*global window, jQuery*/
-
 (function () {
 	'use strict';
 	var $ = jQuery,
@@ -87,28 +101,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				}
 
 				return _(_.range(count)).map(function () {
-					return $('<label />').append(
-						$('<input />', {type: 'checkbox', name: coin}),
+					return $('<label/>', {'class': 'coinCheck'}).append(
+						$('<input/>', {type: 'checkbox', name: coin}),
 						coin
 					)[0];
 				});
 			})));
 
 			$('#coinButton_' + unit).empty().append(_(getVariation(coins, unit)).map(function (c) {
-				return $('<button />', {text: c.amount, click: function () {
-					var that = this;
-
-					_(c.coins).each(function (count, index) {
-						var coin = coinTable[index];
-						var coinsInput = $(that).parents('tr').find('input').filter(function () {
-							return $(this).attr('name') === String(coin);
+				return $('<button/>', {
+					'class': 'coinButton',
+					text: c.amount,
+					click: function () {
+						var that = this;
+						_(c.coins).each(function (count, index) {
+							var coin = coinTable[index];
+							var coinsInput = $(that).parents('tr').find('input').filter(function () {
+								return Number($(this).attr('name')) === coin;
+							});
+							_(coinsInput).each(function (input, index) {
+								$(input).prop('checked', index < count);
+								$(input).change();
+							});
 						});
-						_(coinsInput).each(function (input, index) {
-							$(input).attr('checked', index < count ? 'checked' : null);
-							$(input).change();
-						});
-					})
-				}})[0];
+					}
+				})[0];
 			}));
 		});
 	}
@@ -116,7 +133,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	function readCheckbox(reverse) {
 		return _(coinTable).map(function (coin) {
 			var coinsInput = $('#wallet input[type=checkbox]').filter(function () {
-				return $(this).attr('name') === String(coin);
+				return Number($(this).attr('name')) === coin;
 			});
 
 			if (!reverse) {
@@ -171,6 +188,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		}));
 	}
 
+	function refreshWallet($inputCheckbox) {
+		$inputCheckbox.parent().toggleClass('selected', $inputCheckbox.is(':checked'));
+
+		var checkedElements = $inputCheckbox.parents('tr').find('input[type=checkbox]').filter(':checked');
+		var amount = _(checkedElements).reduce(function (memo, elem) {
+			return Number($(elem).attr('name')) + memo;
+		}, 0);
+
+		$inputCheckbox.parents('tr').find('button')
+			.removeClass('selected')
+			.filter(function () {
+				return Number($(this).text()) === amount;
+			}).addClass('selected');
+	}
+
 	function refresh() {
 		var requestAmount = _.random(1, 4500),
 			startAt = Date.now(),
@@ -181,7 +213,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		$('#requestAmount').text(requestAmount);
 		$('#payDetail').text('');
 		$('#result').text('');
-		$('#done').attr('disabled', null);
+		$('#done').prop('disabled', false);
 
 		while (true) {
 			havingAmount = _.random(requestAmount, 4999);
@@ -216,7 +248,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 					$('#result').text('improper: too many coins');
 				} else {
 					$('#result').text('OK');
-					$('#done').attr('disabled', 'disabled');
+					$('#done').prop('disabled', true);
 
 					score.unshift((Date.now() - startAt) / 1000);
 					$('#scoreLog').text(score.join(', '));
@@ -231,24 +263,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		});
 
 		drawCheckbox(havingCoins);
+		$('#wallet').find('.coinCheck').trigger('change');
 	}
-
-	$('#wallet').on('change', 'input[type=checkbox]', function () {
-		if ($(this).is(':checked')) {
-			$(this).parent().addClass('checked');
-		} else {
-			$(this).parent().removeClass('checked');
-		}
-
-		var amount = _($(this).parents('tr').find('input[type=checkbox]').filter(':checked')).reduce(function (memo, elem) {
-			return +$(elem).attr('name') + memo;
-		}, 0);
-
-		$(this).parents('tr').find('button').removeClass('checked');
-		$(this).parents('tr').find('button').filter(function () {
-			return $(this).text() === String(amount);
-		}).addClass('checked');
-	});
 
 /*
 	console.log(getCoins(376));
@@ -258,6 +274,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	console.log(addCoins([1, 4, 1, 2, 1, 1], [0, 3, 1, 2, 1, 1]))
 */
 
+	$('#wallet').on('change', '.coinCheck', function () {
+		refreshWallet($(this));
+	});
 	refresh();
 }());
 </script>
