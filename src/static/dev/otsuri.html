@@ -203,12 +203,50 @@ input {
 			}).addClass('selected');
 	}
 
-	function refresh() {
+	function refreshQuestion() {
 		var requestAmount = _.random(1, 4500),
 			startAt = Date.now(),
 			requestCoins = getCoins(requestAmount),
 			havingAmount,
 			havingCoins;
+
+		function done() {
+			var payCoins = readCheckbox(),
+				payAmount = getAmount(payCoins),
+				remainCoins = readCheckbox(true),
+				returnAmount = payAmount - requestAmount,
+				returnCoins,
+				resultCoins;
+
+			if (returnAmount >= 0) {
+				returnCoins = getCoins(returnAmount),
+				resultCoins = addCoins(returnCoins, remainCoins);
+
+				$('#payDetail').text(['pay: ', payAmount, ', return: ', returnAmount].join(''));
+
+				if (!isValidOtsuri(payCoins, returnCoins)) {
+					$('#result').text('NG: coins-go-around error');
+				} else if (!isNormalizedCoins(resultCoins)) {
+					$('#result').text('NG: too many coins in your wallet');
+				} else {
+					$('#result').text('OK');
+					$('#done').prop('disabled', true);
+
+					var elapsed = Date.now() - startAt;
+					score.unshift(elapsed / 1000);
+					$('#scoreLog').text(score.join(', '));
+					nextQuestion();
+				}
+			} else {
+				$('#payDetail').text('');
+				$('#result').text('NG: not enough money');
+			}
+		}
+
+		function nextQuestion() {
+			$('#done').off('click', done);
+			setTimeout(refreshQuestion, 3000);
+		}
 
 		$('#requestAmount').text(requestAmount);
 		$('#payDetail').text('');
@@ -224,44 +262,7 @@ input {
 			}
 		}
 
-		//$('#wallet').on('change', 'input[type=checkbox]',
-
-		$('#done').click(function () {
-			var payCoins = readCheckbox(),
-				payAmount = getAmount(payCoins),
-				remainCoins = readCheckbox(true),
-				returnAmount = payAmount - requestAmount,
-				returnCoins,
-				resultCoins;
-
-			//console.log(returnAmount);
-
-			if (returnAmount >= 0) {
-				returnCoins = getCoins(returnAmount),
-				resultCoins = addCoins(returnCoins, remainCoins);
-
-				$('#payDetail').text(['pay: ', payAmount, ', return: ', returnAmount].join(''));
-
-				if (!isValidOtsuri(payCoins, returnCoins)) {
-					$('#result').text('improper: coins-go-around');
-				} else if (!isNormalizedCoins(resultCoins)) {
-					$('#result').text('improper: too many coins');
-				} else {
-					$('#result').text('OK');
-					$('#done').prop('disabled', true);
-
-					score.unshift((Date.now() - startAt) / 1000);
-					$('#scoreLog').text(score.join(', '));
-
-					setTimeout(refresh, 3000);
-				}
-			} else {
-				$('#payDetail').text('');
-				$('#result').text('not enough');
-			}
-
-		});
-
+		$('#done').click(done);
 		drawCheckbox(havingCoins);
 		$('#wallet').find('.coinCheck').trigger('change');
 	}
@@ -277,7 +278,7 @@ input {
 	$('#wallet').on('change', '.coinCheck', function () {
 		refreshWallet($(this));
 	});
-	refresh();
+	refreshQuestion();
 }());
 </script>
 </body>
