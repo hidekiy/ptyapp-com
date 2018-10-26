@@ -2,4 +2,3 @@
 /dclock /app/dclock
 /digital-clock /app/digital-clock
 /fastfood /app/fastfood
-http://ptyapp.com/* https://ptyapp.com/:splat 301!
