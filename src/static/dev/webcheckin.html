@@ -23,8 +23,8 @@ h1 { font-size: 80px; color: #666; margin: 0 }
 <p id="resultTable"></p>
 <p id="loading"><img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> <span>Loading...</span></p>
 </div>
-<p style="text-align: right">Powered By <a href="http://code.google.com/intl/en/apis/chart/interactive/docs/reference.html">Google Visualization API</a>.</p>
-<script src="http://www.google.com/jsapi"></script>
+<p style="text-align: right">Powered By <a href="https://code.google.com/intl/en/apis/chart/interactive/docs/reference.html">Google Visualization API</a>.</p>
+<script src="https://www.google.com/jsapi"></script>
 <script>
 /*global google*/
 (function () {
@@ -34,7 +34,7 @@ h1 { font-size: 80px; color: #666; margin: 0 }
     google.load('jquery', '1');
     google.setOnLoadCallback(function () {
         function QueryByKey(key) {
-            var query = new google.visualization.Query('http://spreadsheets.google.com/tq?' + $.param({
+            var query = new google.visualization.Query('https://spreadsheets.google.com/tq?' + $.param({
     //            key: 'pMIBrnJ4PHK-SHF_4IqAcVQ',
                 key: '0Anir4lZzZS0gdEdwdkVyWTlEekdYUUxNZWNNZGNqUXc',
                 gid: 0, //ワークシート0番
