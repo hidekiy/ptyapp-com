@@ -2,7 +2,9 @@
 const gulp = require('gulp');
 const del = require('del');
 const hb = require('gulp-hb');
+const sitemap = require('gulp-sitemap');
 
+const siteUrl = 'https://ptyapp.com';
 const dest = 'dist';
 
 gulp.task('clean', () => {
@@ -20,6 +22,25 @@ gulp.task('static', () => {
         .pipe(gulp.dest(dest));
 });
 
-gulp.task('build', gulp.parallel('handlebars', 'static'));
+gulp.task('sitemap', () => {
+    return gulp.src([`${dest}/*.html`, `${dest}/app/*.html`], {
+            read: false
+        })
+        .pipe(sitemap({
+            siteUrl,
+            mappings: [
+                {
+                    pages: ['**/*'],
+                    getLoc(siteUrl, loc, entry) {
+                        // Removes the file extension if it exists
+                        return loc.replace(/\.\w+$/, '');
+                    }
+                }
+            ]
+        }))
+        .pipe(gulp.dest(dest));
+});
+
+gulp.task('build', gulp.series(gulp.parallel('handlebars', 'static'), 'sitemap'));
 
 gulp.task('default', gulp.series('clean', 'build'));
