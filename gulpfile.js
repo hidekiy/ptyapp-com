@@ -3,6 +3,8 @@ const gulp = require('gulp');
 const del = require('del');
 const hb = require('gulp-hb');
 const sitemap = require('gulp-sitemap');
+const htmlhint = require('gulp-htmlhint');
+const stylelint = require('gulp-stylelint');
 
 const siteUrl = 'https://ptyapp.com';
 const dest = 'dist';
@@ -41,4 +43,22 @@ gulp.task('sitemap', () => {
 
 gulp.task('build', gulp.series(gulp.parallel('handlebars', 'static'), 'sitemap'));
 
-gulp.task('default', gulp.series('clean', 'build'));
+gulp.task('htmlhint', () => {
+    return gulp.src(`${dest}/**/*.html`)
+        .pipe(htmlhint())
+        .pipe(htmlhint.failOnError());
+});
+
+gulp.task('stylelint', () => {
+    return gulp.src(`${dest}/**/*.css`)
+        .pipe(stylelint({
+            reporters: [{
+                console: true,
+                formatter: 'string'
+            }]
+        }));
+});
+
+gulp.task('test', gulp.parallel('htmlhint', 'stylelint'));
+
+gulp.task('default', gulp.series('clean', 'build', 'test'));

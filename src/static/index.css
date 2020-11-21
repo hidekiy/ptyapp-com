@@ -15,12 +15,22 @@ a {
 	border-radius: 4px;
 }
 
+h1 a {
+	color: #666;
+	text-decoration: none;
+}
+
 a:hover {
 	background: #FFEDFC
 }
 
 a:active {
 	box-shadow: 0 0 0 1px #FF91EA
+}
+
+h1 a:hover,
+h1 a:active {
+	background: transparent;
 }
 
 p {
@@ -35,16 +45,6 @@ h2 {
 h1 {
 	margin: 0 0 40px -5px;
 	font-size: 70px;
-}
-
-h1 a {
-	color: #666;
-	text-decoration: none;
-}
-
-h1 a:hover,
-h1 a:active {
-	background: transparent;
 }
 
 h2 {
