@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=320, initial-scale=1">
     <title>{{title}}</title>
     {{> includes/newrelic-browser }}
-    {{> includes/tagmanager }}
+    {{> includes/gtag }}
     {{#> head-block}}
         {{!-- Custom <head> content per page could be added. --}}
     {{/head-block}}
 </head>
 <body>
-    {{> includes/tagmanager-noscript }}
     {{#> hero-block}}
         {{!-- Hero content goes here. --}}
     {{/hero-block}}

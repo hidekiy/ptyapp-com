@@ -1,6 +1,8 @@
 {{#> layouts/base title="ptyapp.com" }}
 {{#*inline "head-block"}}
-    <link rel="stylesheet" href="index.css">
+    <style>
+        @@include('index.css')
+    </style>
 {{/inline}}
 {{#*inline "hero-block"}}
     <h1><a href="/">ptyapp</a></h1>
@@ -27,6 +29,8 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="index.js"></script>
+    <script>
+        @@include('index.js')
+    </script>
 {{/inline}}
 {{/layouts/base}}
