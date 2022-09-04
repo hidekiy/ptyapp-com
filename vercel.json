@@ -1,3 +1,21 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/clock",
+      "destination": "/app/clock"
+    },
+    {
+      "source": "/dclock",
+      "destination": "/app/dclock"
+    },
+    {
+      "source": "/digital-clock",
+      "destination": "/app/digital-clock"
+    },
+    {
+      "source": "/fastfood",
+      "destination": "/app/fastfood"
+    }
+  ]
 }
